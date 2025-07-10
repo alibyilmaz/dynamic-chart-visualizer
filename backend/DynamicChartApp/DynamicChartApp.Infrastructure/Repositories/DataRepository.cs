@@ -104,7 +104,7 @@ public class DataRepository : IDataRepository
         command.CommandText = req.ObjectType switch
         {
             DataObjectType.Procedure => req.ObjectName, // Just the procedure name for StoredProcedure CommandType
-            DataObjectType.Function => GetFunctionQuery(req.ObjectName), // Handle function calls properly
+            DataObjectType.Function => GetFunctionQuery(req.ObjectName, req.Parameters), // Handle function calls properly
             DataObjectType.View => $"SELECT * FROM dbo.[{req.ObjectName}]", // Include schema for views
             _ => throw new ArgumentException("Invalid object type")
         };
@@ -114,14 +114,12 @@ public class DataRepository : IDataRepository
             : System.Data.CommandType.Text;
     }
 
-    private static string GetFunctionQuery(string functionName)
+    private static string GetFunctionQuery(string functionName, Dictionary<string, object>? parameters)
     {
         // Handle specific known functions with their parameters
-        return functionName switch
-        {
-            "fn_GetProductStock" => "SELECT dbo.fn_GetProductStock(1) AS Stock", // Example with productId = 1
-            _ => $"SELECT * FROM dbo.[{functionName}]()" // Default for table-valued functions
-        };
+        return parameters != null && parameters.TryGetValue("functionName", out var dynamicFunctionName)
+            ? $"SELECT * FROM dbo.[{dynamicFunctionName}]()"
+            : throw new ArgumentException("Missing required parameter: functionName");
     }
 
     private static async Task<ExecutionResult> BuildExecutionResultAsync(SqlDataReader reader)

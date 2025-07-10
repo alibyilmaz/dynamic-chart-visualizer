@@ -10,4 +10,5 @@ public class ExecutionRequest
     public string Password { get; set; } = "";
     public string ObjectName { get; set; } = "";
     public DataObjectType ObjectType { get; set; }
+    public Dictionary<string, object>? Parameters { get; set; }
 }
