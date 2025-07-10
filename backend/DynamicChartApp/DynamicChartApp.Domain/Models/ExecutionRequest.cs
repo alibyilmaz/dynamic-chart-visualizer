@@ -1,4 +1,4 @@
-﻿using DynamicChartApp.Application.DTOs;
+﻿using DynamicChartApp.Domain.Enums;
 
 namespace DynamicChartApp.Domain.Models;
 

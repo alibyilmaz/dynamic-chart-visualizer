@@ -1,3 +1,6 @@
+/**
+ * DataMapper component for mapping data columns to chart axes and labels.
+ */
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -13,12 +16,12 @@ export interface Mapping {
   label?: string;
 }
 
-interface Props {
+export interface DataMapperProps {
   columns: string[];
   onMappingChange: (mapping: Mapping) => void;
 }
 
-const DataMapper: React.FC<Props> = ({ columns, onMappingChange }) => {
+const DataMapper: React.FC<DataMapperProps> = ({ columns, onMappingChange }) => {
   const [mapping, setMapping] = useState<Mapping>({ x: '', y: '', label: '' });
 
   useEffect(() => {
@@ -31,13 +34,11 @@ const DataMapper: React.FC<Props> = ({ columns, onMappingChange }) => {
   // Defensive: If mapping.label is not in columns, set to ''
   const labelValue = mapping.label && columns.includes(mapping.label) ? mapping.label : '';
 
-  // Debug logs
-  console.log('columns:', columns);
-  console.log('mapping:', mapping);
-
   return (
     <Box mb={3}>
-      <Typography variant="h6" gutterBottom>Map Data Fields</Typography>
+      <Typography variant="h6" gutterBottom>
+        Map Data Fields
+      </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={4}>
           <FormControl fullWidth>

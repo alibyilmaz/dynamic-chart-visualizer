@@ -9,10 +9,13 @@ import ChartRenderer from './components/ChartRenderer';
 
 // Add enum for data object types
 export enum DataObjectType {
-  View = 'view',
-  Procedure = 'procedure',
-  Function = 'function',
+  View = 'View',
+  Procedure = 'SP',
+  Function = 'Function',
 }
+
+// Utility to normalize host string to a single backslash
+const normalizeHost = (host: string) => host.replace(/\\+/g, '\\');
 
 function App() {
   const [token, setToken] = useState<string | null>(null);
@@ -73,13 +76,14 @@ function App() {
     setObjects([]);
     setObjectError(null);
     try {
-      // Clean host value to prevent double escaping
       const cleanInfo = {
-        ...info,
-        host: info.host.replace(/\\/g, '\\'),
-        type,
+        Host: normalizeHost(info.host),
+        Database: info.database,
+        Username: info.username,
+        Password: info.password,
+        Type: type,
       };
-      console.log('Sending request with host:', cleanInfo.host);
+      console.log('Sending request with host:', cleanInfo.Host);
       const res = await axios.post('https://localhost:7185/api/Data/objects', cleanInfo);
       setObjects(res.data.data || []);
     } catch (err: any) {
@@ -89,7 +93,10 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-      const response = await axios.post('https://localhost:7185/api/Auth/token', { username, password });
+      const response = await axios.post('https://localhost:7185/api/Auth/token', { 
+        Username: username, 
+        Password: password 
+      });
       setToken(response.data.token);
       setLoginError(null);
     } catch (err: any) {
@@ -126,14 +133,15 @@ function App() {
     setDataLoading(true);
     setDataError(null);
     try {
-      // Clean host value to prevent double escaping
       const cleanConnection = {
-        ...connection,
-        host: connection.host.replace(/\\/g, '\\'),
-        objectName,
-        objectType: objectType === DataObjectType.Procedure ? 'SP' : objectType.charAt(0).toUpperCase() + objectType.slice(1),
+        Host: normalizeHost(connection.host),
+        Database: connection.database,
+        Username: connection.username,
+        Password: connection.password,
+        ObjectName: objectName,
+        ObjectType: objectType,
       };
-      console.log('Sending execute request with host:', cleanConnection.host);
+      console.log('Sending execute request with host:', cleanConnection.Host);
       const res = await axios.post('https://localhost:7185/api/Data/execute', cleanConnection);
       setDataColumns(res.data.data.columns || []);
       setDataRows(res.data.data.rows || []);

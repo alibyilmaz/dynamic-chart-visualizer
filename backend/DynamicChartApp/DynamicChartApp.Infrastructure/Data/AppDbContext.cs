@@ -16,6 +16,15 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Configure decimal precision for monetary values
+        modelBuilder.Entity<Product>()
+            .Property(p => p.Price)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Sale>()
+            .Property(s => s.TotalAmount)
+            .HasPrecision(18, 2);
+
         modelBuilder.Entity<Product>().HasData(
             new Product { Id = 1, Name = "Laptop", Category = "Electronics", Price = 1200.00m, Stock = 50 },
             new Product { Id = 2, Name = "Smartphone", Category = "Electronics", Price = 800.00m, Stock = 120 },

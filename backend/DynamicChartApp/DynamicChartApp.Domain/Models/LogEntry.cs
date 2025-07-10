@@ -9,4 +9,5 @@ public class LogEntry
     public string RequestBody { get; set; } = "";
     public string ResponseBody { get; set; } = "";
     public int StatusCode { get; set; }
+    public string? ErrorMessage { get; set; }
 }

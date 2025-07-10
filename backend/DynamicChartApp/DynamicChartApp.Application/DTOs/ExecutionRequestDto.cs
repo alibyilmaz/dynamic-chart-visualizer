@@ -1,4 +1,6 @@
-﻿namespace DynamicChartApp.Application.DTOs;
+﻿using DynamicChartApp.Domain.Enums;
+
+namespace DynamicChartApp.Application.DTOs;
 
 /// <summary>
 /// Request DTO for executing a database object (view, procedure, function).

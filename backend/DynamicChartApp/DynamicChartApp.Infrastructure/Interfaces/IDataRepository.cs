@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DynamicChartApp.Application.DTOs;
+using DynamicChartApp.Domain.Enums;
+using DynamicChartApp.Domain.Models;
 
 namespace DynamicChartApp.Infrastructure.Interfaces
 {

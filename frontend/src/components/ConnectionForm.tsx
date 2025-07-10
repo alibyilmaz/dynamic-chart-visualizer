@@ -1,3 +1,6 @@
+/**
+ * ConnectionForm component for entering database connection info.
+ */
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Grid } from '@mui/material';
 
@@ -8,11 +11,11 @@ export interface ConnectionInfo {
   password: string;
 }
 
-interface Props {
+export interface ConnectionFormProps {
   onConnect: (info: ConnectionInfo) => void;
 }
 
-const ConnectionForm: React.FC<Props> = ({ onConnect }) => {
+const ConnectionForm: React.FC<ConnectionFormProps> = ({ onConnect }) => {
   const [form, setForm] = useState<ConnectionInfo>({
     host: '',
     database: '',
@@ -37,7 +40,9 @@ const ConnectionForm: React.FC<Props> = ({ onConnect }) => {
 
   return (
     <Box component="form" onSubmit={handleSubmit} mb={3}>
-      <Typography variant="h6" gutterBottom>Database Connection</Typography>
+      <Typography variant="h6" gutterBottom>
+        Database Connection
+      </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField label="Host" name="host" value={form.host} onChange={handleChange} fullWidth required />
@@ -53,7 +58,9 @@ const ConnectionForm: React.FC<Props> = ({ onConnect }) => {
         </Grid>
       </Grid>
       {error && <Typography color="error" mt={2}>{error}</Typography>}
-      <Button type="submit" variant="contained" sx={{ mt: 2 }}>Connect</Button>
+      <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+        Connect
+      </Button>
     </Box>
   );
 };

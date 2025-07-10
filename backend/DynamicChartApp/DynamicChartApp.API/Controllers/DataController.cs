@@ -22,44 +22,19 @@ public class DataController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Execute([FromBody] ExecutionRequestDto requestDto)
     {
-        try
-        {
-            var result = await _dataService.ExecuteAndLogAsync(requestDto, HttpContext.Request.Path);
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new ResponseDto<object>
-            {
-                Status = "error",
-                Message = ex.Message,
-                Data = null
-            });
-        }
+        var result = await _dataService.ExecuteAndLogAsync(requestDto, HttpContext.Request.Path);
+        if (result.Status == "Error")
+            return StatusCode(500, result);
+        return Ok(result);
     }
 
     [HttpPost("objects")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> ListObjects([FromBody] ListObjectsRequestDto requestDto)
     {
-        try
-        {
-            var result = await _dataService.ListObjectsAsync(requestDto.Host, requestDto.Database, requestDto.Username, requestDto.Password, requestDto.Type);
-            return Ok(new ResponseDto<List<string>>
-            {
-                Status = "success",
-                Message = "Objects listed successfully.",
-                Data = result
-            });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new ResponseDto<object>
-            {
-                Status = "error",
-                Message = ex.Message,
-                Data = null
-            });
-        }
+        var result = await _dataService.ListObjectsAndLogAsync(requestDto.Host, requestDto.Database, requestDto.Username, requestDto.Password, requestDto.Type, HttpContext.Request.Path);
+        if (result.Status == "Error")
+            return StatusCode(500, result);
+        return Ok(result);
     }
 }
