@@ -1,199 +1,136 @@
 # Dynamic Chart Visualizer
 
+A full-stack application for dynamically connecting to SQL Server databases, executing views/procedures/functions, and visualizing data with interactive charts.
+
+## 📸 Demo
+
+![Dynamic Chart Visualizer Demo](./images/demo.png)
+
+*The application interface showing a bar chart of top-selling products from the `sp_GetTopSellingProducts` stored procedure*
+
 ## 🚀 Quick Start
 
-1. **Clone the repo & install prerequisites:**
-   - .NET 8 SDK
-   - Node.js & npm
-   - SQL Server (LocalDB, Express, or full)
-2. **Backend:**
-   - `cd backend/DynamicChartApp`
-   - `dotnet build`
-   - `dotnet ef database update --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API`
-   - `dotnet run --project DynamicChartApp.API`
-   - API: [https://localhost:7185/swagger](https://localhost:7185/swagger)
-3. **Frontend:**
-   - `cd frontend`
-   - `npm install`
-   - `npm start`
-   - App: [http://localhost:3000](http://localhost:3000)
+### Prerequisites
+- .NET 8 SDK
+- Node.js 18+ & npm
+- SQL Server (LocalDB, Express, or full)
 
----
-
-## Features
-- **Backend (.NET 8 Web API):**
-  - Dynamic MSSQL connection (user-supplied credentials)
-  - List and execute views, stored procedures, and functions
-  - JWT authentication and logging (all responses, all status codes)
-  - Sample data: Products, Sales, demo view, stored procedure, and function
-  - CORS enabled for frontend
-- **Frontend (React + TypeScript + Material-UI):**
-  - Secure login (JWT, auto-logout on session expiration)
-  - Database connection form
-  - Dynamic object selection and data mapping
-  - Chart rendering (Line, Bar, Radar) with Chart.js
-  - Switch chart types on the fly
-  - Logout button
-
----
-
-## Database Objects & Sample Data
-After running migrations, the following are created **automatically**:
-
-- **Tables:**
-  - `Products` (Name, Category, Price, Stock)
-  - `Sales` (ProductId, Quantity, SaleDate, TotalAmount)
-- **View:**
-  - `vw_ProductSalesSummary` (Aggregated product sales)
-- **Stored Procedure:**
-  - `sp_GetTopSellingProducts` (Top 5 selling products)
-- **Function:**
-  - `fn_GetProductStock(@productId INT)` (Stock for a product)
-- **Sample Data:**
-  - 10 products, 15 sales records (see migrations for details)
-
----
-
-## Sample Connection Info
+### 1. Backend Setup
+```bash
+cd backend/DynamicChartApp
+dotnet build
+dotnet ef database update
+dotnet run
 ```
-Host: localhost
-Database: DynamicChartDb
-Username: sa
-Password: <yourStrong(!)Password>
+**API:** https://localhost:7185/swagger
+
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm start
 ```
+**App:** http://localhost:3000
 
-## Sample Data Objects
-- **View:** `vw_ProductSalesSummary`
-- **Stored Procedure:** `sp_GetTopSellingProducts`
-- **Function:** `fn_GetProductStock`
+## ✨ Features
 
----
+- **Dynamic SQL Server Connection** - Connect to any SQL Server database with user credentials
+- **Database Object Execution** - List and execute views, stored procedures, and functions
+- **Interactive Charts** - Visualize data with Line, Bar, and Radar charts (Chart.js)
+- **JWT Authentication** - Secure login with auto-logout on session expiration
+- **Material-UI Interface** - Modern, responsive React frontend
+- **Real-time Data Mapping** - Dynamically map database columns to chart axes
 
-## Build & Run Details
+## 📊 Sample Data
+
+The application automatically creates demo data:
+
+**Tables:**
+- `Products` (10 sample products)
+- `Sales` (15 sample sales records)
+
+**Database Objects:**
+- **View:** `vw_ProductSalesSummary` - Aggregated product sales data
+- **Stored Procedure:** `sp_GetTopSellingProducts` - Top 5 selling products
+- **Function:** `fn_GetProductStock(productId)` - Get stock for a specific product
+
+## 🔧 Usage
+
+1. **Login** with any username/password to get JWT token
+2. **Connect** to your SQL Server database
+3. **Select** a view, stored procedure, or function
+4. **Map** data columns to chart axes
+5. **Visualize** with interactive charts
+
+## 🛠️ Development Commands
 
 ### Backend
-- **Build:**
-  ```sh
-  cd backend/DynamicChartApp
-  dotnet build
-  ```
-- **Apply migrations & seed data:**
-  ```sh
-  dotnet ef database update --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API
-  ```
-- **Run:**
-  ```sh
-  dotnet run --project DynamicChartApp.API
-  ```
-- **Swagger UI:** [https://localhost:7185/swagger](https://localhost:7185/swagger)
+```bash
+# Build project
+dotnet build
+
+# Run migrations
+dotnet ef database update
+
+# Start API server
+dotnet run
+
+# Reset database
+dotnet ef database drop
+dotnet ef database update
+```
 
 ### Frontend
-- **Install dependencies:**
-  ```sh
-  cd frontend
-  npm install
-  ```
-- **Run:**
-  ```sh
-  npm start
-  ```
-- **App URL:** [http://localhost:3000](http://localhost:3000)
+```bash
+# Install dependencies
+npm install
 
----
+# Start development server
+npm start
 
-## EF Core Database Management
-- **Create migration:**
-  ```sh
-  dotnet ef migrations add MigrationName --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API
-  ```
-- **Apply migrations:**
-  ```sh
-  dotnet ef database update --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API
-  ```
-- **Drop database:**
-  ```sh
-  dotnet ef database drop --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API
-  ```
-- **List migrations:**
-  ```sh
-  dotnet ef migrations list --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API
-  ```
-
----
-
-## User Flow
-1. **Login:** Enter your username and password to obtain a JWT token. If your session expires, you will be automatically logged out and prompted to log in again.
-2. **Connect to Database:** Enter MSSQL connection info (host, db, username, password).
-3. **Select Data Object:** Choose a view, stored procedure, or function from the available list.
-4. **Map Data Fields:** Assign columns to X Axis, Y Axis, and (optionally) Labels.
-5. **Render Chart:** Instantly visualize your data as a Line, Bar, or Radar chart. Switch chart types on the fly.
-6. **Logout:** Use the logout button in the top right to securely end your session.
-
----
-
-## API Usage
-### Authentication
-- Obtain a JWT token via the authentication endpoint.
-- Pass the token in the `Authorization: Bearer <token>` header for protected endpoints.
-
-### Endpoints
-- `POST /api/data/objects` — List all objects of a type (view, procedure, function)
-  - Body: `{ "host": ..., "database": ..., "username": ..., "password": ..., "type": "view|procedure|function" }`
-- `POST /api/data/execute` — Execute a selected object and get results
-  - Body: `{ "host": ..., "database": ..., "username": ..., "password": ..., "objectName": ..., "objectType": ... }`
-
-### Standard API Response
+# Build for production
+npm run build
 ```
+
+## 🔗 API Endpoints
+
+- `POST /api/Auth/token` - User authentication
+- `POST /api/Data/objects` - List database objects
+- `POST /api/Data/execute` - Execute selected object
+
+**Sample Request:**
+```json
 {
-  "status": "Success",
-  "message": "Execution completed successfully.",
-  "data": {
-    "columns": ["Column1", "Column2", ...],
-    "rows": [
-      { "Column1": "value1", "Column2": "value2", ... },
-      ...
-    ]
-  },
-  "execution": {
-    "startedAt": "2024-07-09T19:54:00Z",
-    "finishedAt": "2024-07-09T19:54:01Z",
-    "durationMs": 1000
-  }
+  "Host": "localhost",
+  "Database": "DynamicChartDb", 
+  "Username": "sa",
+  "Password": "yourPassword",
+  "ObjectName": "vw_ProductSalesSummary",
+  "ObjectType": "View"
 }
 ```
 
----
+## 🧰 Tech Stack
 
-## Troubleshooting
-- **Migration fails:** Ensure SQL Server is running and connection string is correct
-- **Port conflicts:** Check if ports 7185/5294 are available for backend, 3000 for frontend
-- **CORS errors:** Verify CORS configuration in `Program.cs`
-- **Database objects missing:** Run `dotnet ef database update` to apply all migrations
-- **Reset database:**
-  ```sh
-  cd backend/DynamicChartApp
-  dotnet ef database drop --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API
-  dotnet ef database update --project DynamicChartApp.Infrastructure --startup-project DynamicChartApp.API
-  ```
-
----
-
-## Technologies Used
+**Backend:**
 - .NET 8 Web API
 - Entity Framework Core
-- Microsoft SQL Server
+- SQL Server
 - JWT Authentication
-- Swagger (OpenAPI)
-- React.js + TypeScript + Material-UI + Chart.js
+- Swagger/OpenAPI
 
-## Test Credentials
-- Username: `sa`
-- Password: `<yourStrong(!)Password>`
+**Frontend:**
+- React 18 + TypeScript
+- Material-UI (MUI)
+- Chart.js
+- Axios for API calls
 
-## Sample Database Structure
-- See `backend/DynamicChartApp/DynamicChartApp.Infrastructure/Data/AppDbContext.cs` and migrations for schema and seed data.
-- Demo objects are created in the latest migration.
+## 🐛 Troubleshooting
+
+- **Database connection fails**: Check SQL Server is running and credentials are correct
+- **Port conflicts**: Ensure ports 7185 (API) and 3000 (React) are available
+- **Missing demo data**: Run `dotnet ef database update` to apply migrations
 
 ---
 
-For any issues, please open an issue or contact the maintainer.
+**Need help?** Open an issue on GitHub or check the Swagger documentation at `/swagger`
